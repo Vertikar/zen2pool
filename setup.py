@@ -6,6 +6,7 @@ import platform
 
 from distutils.core import setup
 from distutils.sysconfig import get_python_lib
+from zope import interface
 import py2exe
 
 version = __import__('p2pool').__version__
@@ -44,7 +45,7 @@ try:
         options=dict(py2exe=dict(
             bundle_files=bundle,
             dll_excludes=['w9xpopen.exe', "mswsock.dll", "MSWSOCK.dll"],
-            includes=['twisted.web.resource', 'ltc_scrypt'],
+            includes=['twisted.web.resource', 'ltc_scrypt', 'zope.interface'],
         )),
         zipfile=None,
     )
