@@ -367,7 +367,7 @@ nets = dict(
     strayacoin=math.Object(
         P2P_PREFIX='d0e1f5ec'.decode('hex'),
         P2P_PORT=9666,
-        ADDRESS_VERSION=20,
+        ADDRESS_VERSION=63,
         RPC_PORT=9432,
         RPC_CHECK=defer.inlineCallbacks(lambda bitcoind: defer.returnValue(
             'strayacoinprivkey' in (yield bitcoind.rpc_help()) and
