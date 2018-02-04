@@ -257,12 +257,12 @@ nets = dict(
         VERSION_CHECK=lambda v: True,
     ),
 
-	strayacoin=math.Object(
-		PARENT=networks.nets['strayacoin'],
-        SHARE_PERIOD=25, # seconds target spacing
+    strayacoin=math.Object(
+	PARENT=networks.nets['strayacoin'],
+        SHARE_PERIOD=0.5 * 60, # seconds target spacing
         CHAIN_LENGTH=3*60*60//15, # shares
         REAL_CHAIN_LENGTH=3*60*60//15, # shares
-        TARGET_LOOKBEHIND=20, # shares coinbase maturity
+        TARGET_LOOKBEHIND=15, # shares coinbase maturity
         SPREAD=10, # blocks
         IDENTIFIER='E30D71731AE64889'.decode('hex'),
         PREFIX='B2021AF67EDF5411'.decode('hex'),
@@ -274,7 +274,7 @@ nets = dict(
         BOOTSTRAP_ADDRS=''.split(' '),
         ANNOUNCE_CHANNEL='#p2pool-alt',
         VERSION_CHECK=lambda v: True,
-	),
+    ),
 )
 for net_name, net in nets.iteritems():
     net.NAME = net_name

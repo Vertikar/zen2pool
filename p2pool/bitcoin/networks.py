@@ -370,7 +370,7 @@ nets = dict(
         ADDRESS_VERSION=20,
         RPC_PORT=9432,
         RPC_CHECK=defer.inlineCallbacks(lambda bitcoind: defer.returnValue(
-            'strayacoinaddress' in (yield bitcoind.rpc_help()) and
+            'strayacoinprivkey' in (yield bitcoind.rpc_help()) and
             not (yield bitcoind.rpc_getinfo())['testnet']
         )),
         SUBSIDY_FUNC=lambda height: 50*100000000 >> (height + 1)//840000,
