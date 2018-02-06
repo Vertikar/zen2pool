@@ -331,7 +331,7 @@ class Tracker(object):
     
     def get_chain(self, start_hash, length):
         assert length <= self.get_height(start_hash)
-        for i in xrange(length):
+        for i in xrange(int(length)):
             item = self.items[start_hash]
             yield item
             start_hash = self._delta_type.get_tail(item)
