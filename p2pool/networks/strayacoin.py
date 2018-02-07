@@ -13,6 +13,6 @@ MIN_TARGET = 0
 MAX_TARGET = 2**256//2**20 - 1
 PERSIST = True
 WORKER_PORT = 9444
-BOOTSTRAP_ADDRS = 'mxblue.net.au p2pool.nahyeah.network straya.network'.split(' ')
+BOOTSTRAP_ADDRS = 'mxblue.net.au p2pool.nahyeah.network p2pool.straya.network'.split(' ')
 ANNOUNCE_CHANNEL = '#p2pool-alt'
 VERSION_CHECK = lambda v: True
