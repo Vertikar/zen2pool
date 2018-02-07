@@ -72,7 +72,7 @@ class StratumRPCMiningProvider(object):
             nonce=pack.IntType(32).unpack(getwork._swap4(nonce.decode('hex'))),
         )
         
-		# Disconnect miners with large DOA rates to prevent DoS
+        # Disconnect miners with large DOA rates to prevent DoS
         res = got_response(header, worker_name, coinb_nonce)
         if len(self.wb._inner.my_share_hashes) > 20:
             if float(len(self.wb._inner.my_doa_share_hashes)) / float(len(self.wb._inner.my_share_hashes)) > 0.60:

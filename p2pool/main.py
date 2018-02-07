@@ -523,8 +523,8 @@ def run():
     worker_group.add_argument('-f', '--fee', metavar='FEE_PERCENTAGE',
         help='''charge workers mining to their own bitcoin address (by setting their miner's username to a bitcoin address) this percentage fee to mine on your p2pool instance. Amount displayed at http://127.0.0.1:WORKER_PORT/fee (default: 0)''',
         type=float, action='store', default=0, dest='worker_fee')
-		
-	worker_group.add_argument('--miner-share-rate', metavar='SHARES_PER_MINUTE',
+    
+    worker_group.add_argument('--miner-share-rate', metavar='SHARES_PER_MINUTE',
         help='number of psuedoshares per minute for each miner',
         type=float, action='store', default=None, dest='miner_share_rate')
     worker_group.add_argument('--address-share-rate', metavar='SHARES_PER_MINUTE',
@@ -564,8 +564,8 @@ def run():
     
     net_name = args.net_name + ('_testnet' if args.testnet else '')
     net = networks.nets[net_name]
-	
-	args.min_difficulty /= net.PARENT.DUMB_SCRYPT_DIFF
+    
+    args.min_difficulty /= net.PARENT.DUMB_SCRYPT_DIFF
     
     datadir_path = os.path.join((os.path.join(os.path.dirname(sys.argv[0]), 'data') if args.datadir is None else args.datadir), net_name)
     if not os.path.exists(datadir_path):
