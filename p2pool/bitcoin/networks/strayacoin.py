@@ -24,5 +24,5 @@ BLOCK_EXPLORER_URL_PREFIX = 'http://straya.network/block/'
 ADDRESS_EXPLORER_URL_PREFIX = 'http://straya.network/address/'
 TX_EXPLORER_URL_PREFIX = 'http://straya.network/tx/'
 SANE_TARGET_RANGE = (2**256//1000000000 - 1, 2**256//1000 - 1)
-DUMB_SCRYPT_DIFF = 2**16
+DUMB_SCRYPT_DIFF = 2**8
 DUST_THRESHOLD = 0.03e8

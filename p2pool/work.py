@@ -174,9 +174,13 @@ class WorkerBridge(worker_interface.WorkerBridge):
     def get_user_details(self, username):
         contents = re.split('([+/])', username)
         assert len(contents) % 2 == 1
-        
-        user, contents2 = contents[0], contents[1:]
-        
+        contents2 = re.split('\.', contents[0])
+        user = contents2[0]
+
+        new_min_difficulty = self.min_difficulty
+
+        if len(contents2) == 2 and contents2[1] == 'GPU':
+            new_min_difficulty = 1 / self.node.net.PARENT.DUMB_SCRYPT_DIFF
         desired_pseudoshare_target = None
         desired_share_target = None
         '''
@@ -212,15 +216,15 @@ class WorkerBridge(worker_interface.WorkerBridge):
                 if self.args.address != 'dynamic':
                     pubkey_hash = self.my_pubkey_hash
         
-        return user, pubkey_hash, desired_share_target, desired_pseudoshare_target
+        return user, pubkey_hash, new_min_difficulty, desired_share_target, desired_pseudoshare_target
     
     def preprocess_request(self, user):
         if (self.node.p2p_node is None or len(self.node.p2p_node.peers) == 0) and self.node.net.PERSIST:
             raise jsonrpc.Error_for_code(-12345)(u'p2pool is not connected to any peers')
         if time.time() > self.current_work.value['last_update'] + 60:
             raise jsonrpc.Error_for_code(-12345)(u'lost contact with bitcoind')
-        user, pubkey_hash, desired_share_target, desired_pseudoshare_target = self.get_user_details(user)
-        return user, pubkey_hash, desired_share_target, desired_pseudoshare_target
+        user, pubkey_hash, min_difficulty, desired_share_target, desired_pseudoshare_target = self.get_user_details(user)
+        return user, pubkey_hash, min_difficulty, desired_share_target, desired_pseudoshare_target
     
     def _estimate_local_hash_rate(self):
         if len(self.recent_shares_ts_work) == 50:
@@ -261,7 +265,7 @@ class WorkerBridge(worker_interface.WorkerBridge):
                 miner_hash_rate = miner_hash_rate + datum['work']/dt
         return miner_hash_rate
  
-    def get_work(self, user, pubkey_hash, desired_share_target, desired_pseudoshare_target):
+    def get_work(self, user, pubkey_hash, min_difficulty, desired_share_target, desired_pseudoshare_target):
         global print_throttle
         if (self.node.p2p_node is None or len(self.node.p2p_node.peers) == 0) and self.node.net.PERSIST:
             raise jsonrpc.Error_for_code(-12345)(u'p2pool is not connected to any peers')
@@ -369,7 +373,7 @@ class WorkerBridge(worker_interface.WorkerBridge):
                 target = min(target,
                     bitcoin_data.average_attempts_to_target(local_hash_rate * 1)) # limit to 1 share response every second by modulating pseudoshare difficulty
             '''
-            target = bitcoin_data.difficulty_to_target_alt(self.min_difficulty, self.node.net.PARENT.DUMB_SCRYPT_DIFF)
+            target = bitcoin_data.difficulty_to_target_alt(min_difficulty, self.node.net.PARENT.DUMB_SCRYPT_DIFF)
             if self.share_rate is not None:
                 if self.share_rate_type == 'address': # per-address
                     if local_addr_rates is not None:
@@ -395,8 +399,7 @@ class WorkerBridge(worker_interface.WorkerBridge):
             else:
                 while (rounded_difficulty + rounded_difficulty / 2) / 2 >= difficulty:
                     rounded_difficulty = rounded_difficulty / 2
-                
-            target = bitcoin_data.difficulty_to_target_alt(self.min_difficulty, self.node.net.PARENT.DUMB_SCRYPT_DIFF)
+            
         else:
             target = desired_pseudoshare_target
         target = max(target, share_info['bits'].target)
@@ -458,7 +461,7 @@ class WorkerBridge(worker_interface.WorkerBridge):
             except:
                 log.err(None, 'Error while processing potential block:')
             
-            user, _, _, _ = self.get_user_details(user)
+            user, _, _, _, _ = self.get_user_details(user)
             assert header['previous_block'] == ba['previous_block']
             assert header['merkle_root'] == bitcoin_data.check_merkle_link(bitcoin_data.hash256(new_packed_gentx), merkle_link)
             assert header['bits'] == ba['bits']
