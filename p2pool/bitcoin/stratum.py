@@ -41,7 +41,7 @@ class StratumRPCMiningProvider(object):
             self.transport.loseConnection()
             return
         jobid = str(random.randrange(2**128))
-        self.other.svc_mining.rpc_set_difficulty(bitcoin_data.target_to_difficulty(x['share_target'])).addErrback(lambda err: None)
+        self.other.svc_mining.rpc_set_difficulty(bitcoin_data.target_to_difficulty_alt(x['share_target'], self.wb.net.DUMB_SCRYPT_DIFF) * self.wb.net.DUMB_SCRYPT_DIFF).addErrback(lambda err: None)
         self.other.svc_mining.rpc_notify(
             jobid, # jobid
             getwork._swap4(pack.IntType(256).pack(x['previous_block'])).encode('hex'), # prevhash
@@ -71,8 +71,21 @@ class StratumRPCMiningProvider(object):
             bits=x['bits'],
             nonce=pack.IntType(32).unpack(getwork._swap4(nonce.decode('hex'))),
         )
-        return got_response(header, worker_name, coinb_nonce)
+        
+        # Disconnect miners with large DOA rates to prevent DoS
+        res = got_response(header, worker_name, coinb_nonce)
+        if len(self.wb._inner.my_share_hashes) > 20:
+            if float(len(self.wb._inner.my_doa_share_hashes)) / float(len(self.wb._inner.my_share_hashes)) > 0.60:
+               self.transport.loseConnection()
+               return res    
+
+        # Disconnect miners with large hash > target to prevent DoS
+        if self.wb._inner.total_hashes > 20:
+            if float(self.wb._inner.invalid_hashes) / float(self.wb._inner.total_hashes) > 0.05:
+                self.transport.loseConnection()
+                return res
     
+        return res
     def close(self):
         self.wb.new_work_event.unwatch(self.watch_id)
 
