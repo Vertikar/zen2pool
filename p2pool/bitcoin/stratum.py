@@ -85,7 +85,7 @@ class StratumRPCMiningProvider(object):
                 self.transport.loseConnection()
                 return res
     
-		return res
+        return res
     def close(self):
         self.wb.new_work_event.unwatch(self.watch_id)
 
