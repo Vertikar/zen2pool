@@ -1,3 +1,5 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/vertikar/zen2pool/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/vertikar/zen2pool?targetFile=requirements.txt)
+
 Requirements:
 -------------------------
 Generic:
