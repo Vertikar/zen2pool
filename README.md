@@ -1,4 +1,6 @@
-[![Known Vulnerabilities](https://snyk.io/test/github/vertikar/zen2pool/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/vertikar/zen2pool?targetFile=requirements.txt)
+[![Known Vulnerabilities](https://snyk.io/test/github/vertikar/zen2pool/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/vertikar/zen2pool?targetFile=requirements.txt) 
+
+[![Build Status](https://travis-ci.org/Vertikar/zen2pool.svg?branch=master)](https://travis-ci.org/Vertikar/zen2pool)
 
 Requirements:
 -------------------------
